@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Dinosaur, DinosaurDetail } from '../types/dinosaur';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -23,7 +23,9 @@ export const dinosaurApi = {
 
   // 搜索恐龙
   searchDinosaurs: async (query: string): Promise<Dinosaur[]> => {
-    const response = await api.get(`/dinosaurs/search?q=${encodeURIComponent(query)}`);
+    const response = await api.get(
+      `/dinosaurs/search?q=${encodeURIComponent(query)}`,
+    );
     return response.data;
   },
 
@@ -40,7 +42,10 @@ export const dinosaurApi = {
   },
 
   // 更新恐龙数据
-  updateDinosaur: async (id: string, dinosaur: Partial<Dinosaur>): Promise<Dinosaur> => {
+  updateDinosaur: async (
+    id: string,
+    dinosaur: Partial<Dinosaur>,
+  ): Promise<Dinosaur> => {
     const response = await api.put(`/dinosaurs/${id}`, dinosaur);
     return response.data;
   },
@@ -51,13 +56,18 @@ export const dinosaurApi = {
   },
 
   // 获取恐龙图片
-  getDinosaurImages: async (id: string): Promise<{ url: string; description?: string }[]> => {
+  getDinosaurImages: async (
+    id: string,
+  ): Promise<{ url: string; description?: string }[]> => {
     const response = await api.get(`/dinosaurs/${id}/images`);
     return response.data;
   },
 
   // 添加恐龙图片
-  addDinosaurImages: async (id: string, images: { url: string; description?: string }[]): Promise<void> => {
+  addDinosaurImages: async (
+    id: string,
+    images: { url: string; description?: string }[],
+  ): Promise<void> => {
     await api.post(`/dinosaurs/${id}/images`, { images });
   },
 
