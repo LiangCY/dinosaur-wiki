@@ -177,55 +177,51 @@ const DinosaurDetailComponent: React.FC<DinosaurDetailProps> = ({
                 <p className="scientific-name">{dinosaur.scientific_name}</p>
                 <div className="tags" style={{ margin: '16px 0' }}>
                   <Tag
-                    color={getPeriodColor(dinosaur.period)}
+                    color={getPeriodColor(dinosaur.era)}
                     icon={<ClockCircleOutlined />}
                   >
-                    {dinosaur.period}
+                    {dinosaur.era}
                   </Tag>
                   <Tag color={getDietColor(dinosaur.diet)}>{dinosaur.diet}</Tag>
-                  {dinosaur.region && (
-                    <Tag icon={<EnvironmentOutlined />}>{dinosaur.region}</Tag>
-                  )}
                 </div>
               </div>
 
-              <Descriptions
-                title="基本信息"
-                column={{ xs: 1, sm: 1, md: 2 }}
-                size="middle"
-              >
+              <Descriptions title="基本信息" column={{ sm: 2, md: 4, lg: 6 }}>
                 {(dinosaur.length_min_meters || dinosaur.length_max_meters) && (
-                  <Descriptions.Item label="体长">
+                  <Descriptions.Item label="体长" span={2}>
                     {dinosaur.length_min_meters && dinosaur.length_max_meters
                       ? `${dinosaur.length_min_meters}-${dinosaur.length_max_meters} 米`
-                      : `${
+                      : `$
                           dinosaur.length_min_meters ||
                           dinosaur.length_max_meters
                         } 米`}
                   </Descriptions.Item>
                 )}
                 {(dinosaur.weight_min_tons || dinosaur.weight_max_tons) && (
-                  <Descriptions.Item label="体重">
+                  <Descriptions.Item label="体重" span={2}>
                     {dinosaur.weight_min_tons && dinosaur.weight_max_tons
                       ? `${dinosaur.weight_min_tons}-${dinosaur.weight_max_tons} 吨`
-                      : `${
+                      : `$
                           dinosaur.weight_min_tons || dinosaur.weight_max_tons
                         } 吨`}
                   </Descriptions.Item>
                 )}
+                <Descriptions.Item label="饮食习惯" span={2}>
+                  {dinosaur.diet}
+                </Descriptions.Item>
+                <Descriptions.Item label="年代范围" span={2}>
+                  {dinosaur.start_mya}-{dinosaur.end_mya} 百万年前
+                </Descriptions.Item>
+                <Descriptions.Item label="生存时期" span={4}>
+                  {dinosaur.period}
+                </Descriptions.Item>
                 {dinosaur.habitat && (
-                  <Descriptions.Item label="栖息地">
+                  <Descriptions.Item label="栖息地" span="filled">
                     {dinosaur.habitat}
                   </Descriptions.Item>
                 )}
-                <Descriptions.Item label="生存时期">
-                  {dinosaur.period}
-                </Descriptions.Item>
-                <Descriptions.Item label="饮食习惯">
-                  {dinosaur.diet}
-                </Descriptions.Item>
                 {dinosaur.region && (
-                  <Descriptions.Item label="发现地区">
+                  <Descriptions.Item label="发现地区" span="filled">
                     {dinosaur.region}
                   </Descriptions.Item>
                 )}
@@ -235,10 +231,61 @@ const DinosaurDetailComponent: React.FC<DinosaurDetailProps> = ({
         </Row>
       </Card>
 
+      {/* 分类信息卡片 */}
+      <Card title="分类信息" style={{ marginTop: '24px' }}>
+        <Descriptions column={{ xs: 1, sm: 1, md: 1 }} size="middle">
+          {dinosaur.taxonomy_kingdom && (
+            <Descriptions.Item label="界">
+              {dinosaur.taxonomy_kingdom}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_phylum && (
+            <Descriptions.Item label="门">
+              {dinosaur.taxonomy_phylum}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_class && (
+            <Descriptions.Item label="纲">
+              {dinosaur.taxonomy_class}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_order && (
+            <Descriptions.Item label="目">
+              {dinosaur.taxonomy_order}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_suborder && (
+            <Descriptions.Item label="亚目">
+              {dinosaur.taxonomy_suborder}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_family && (
+            <Descriptions.Item label="科">
+              {dinosaur.taxonomy_family}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_subfamily && (
+            <Descriptions.Item label="亚科">
+              {dinosaur.taxonomy_subfamily}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_genus && (
+            <Descriptions.Item label="属">
+              {dinosaur.taxonomy_genus}
+            </Descriptions.Item>
+          )}
+          {dinosaur.taxonomy_species && (
+            <Descriptions.Item label="种">
+              {dinosaur.taxonomy_species}
+            </Descriptions.Item>
+          )}
+        </Descriptions>
+      </Card>
+
       {/* 详细信息标签页 */}
       <Card style={{ marginTop: '24px' }}>
         <Tabs defaultActiveKey="description" size="large">
-          <TabPane tab="详细描述" key="description">
+          <TabPane tab="描述" key="description">
             <div className="description-content">
               {dinosaur.description ? (
                 <p
@@ -251,7 +298,7 @@ const DinosaurDetailComponent: React.FC<DinosaurDetailProps> = ({
                   {dinosaur.description}
                 </p>
               ) : (
-                <Empty description="暂无详细描述" />
+                <Empty description="暂无描述" />
               )}
             </div>
           </TabPane>

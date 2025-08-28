@@ -1,6 +1,26 @@
 import React, { useState } from 'react';
-import { Card, Button, Space, Table, Tag, Typography, Popconfirm, Modal, Form, Input, Row, Col, InputNumber, message } from 'antd';
-import { ReloadOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  Card,
+  Button,
+  Space,
+  Table,
+  Tag,
+  Typography,
+  Popconfirm,
+  Modal,
+  Form,
+  Input,
+  Row,
+  Col,
+  InputNumber,
+  message,
+} from 'antd';
+import {
+  ReloadOutlined,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import type { Dinosaur } from '../../types/dinosaur';
 import { dinosaurApi } from '../../services/api';
 
@@ -15,14 +35,16 @@ interface DataPanelProps {
 const DataPanel: React.FC<DataPanelProps> = ({
   dinosaurs,
   loading,
-  loadDinosaurs
+  loadDinosaurs,
 }) => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentDinosaur, setCurrentDinosaur] = useState<Dinosaur | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [editForm] = Form.useForm();
 
   const handleEditDinosaur = (dinosaur: Dinosaur) => {
     setCurrentDinosaur(dinosaur);
+    setIsCreating(false);
     setEditModalVisible(true);
     // 使用setTimeout确保模态框完全打开后再设置表单值
     setTimeout(() => {
@@ -32,20 +54,42 @@ const DataPanel: React.FC<DataPanelProps> = ({
     }, 100);
   };
 
-  const handleUpdateDinosaur = async (values: Partial<Dinosaur>) => {
-    try {
-      if (!currentDinosaur) {
-        message.error('未选择恐龙');
-        return;
-      }
+  const handleCreateDinosaur = () => {
+    setCurrentDinosaur(null);
+    setIsCreating(true);
+    setEditModalVisible(true);
+    // 清空表单
+    setTimeout(() => {
+      editForm.resetFields();
+    }, 100);
+  };
 
-      await dinosaurApi.updateDinosaur(currentDinosaur.id, values);
-      message.success('恐龙信息更新成功');
+  const handleUpdateDinosaur = async (
+    values: Omit<Dinosaur, 'id' | 'created_at' | 'updated_at'>,
+  ) => {
+    try {
+      if (isCreating) {
+        // 创建恐龙
+        await dinosaurApi.createDinosaur(values);
+        message.success('恐龙信息创建成功');
+      } else {
+        // 更新恐龙
+        if (!currentDinosaur) {
+          message.error('未选择恐龙');
+          return;
+        }
+        await dinosaurApi.updateDinosaur(currentDinosaur.id, values);
+        message.success('恐龙信息更新成功');
+      }
       setEditModalVisible(false);
       loadDinosaurs();
-    } catch (error) {
-      message.error('更新失败');
-      console.error('Update dinosaur error:', error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      message.error(isCreating ? '创建失败' : '更新失败');
+      console.error(
+        isCreating ? 'Create dinosaur error:' : 'Update dinosaur error:',
+        error,
+      );
     }
   };
 
@@ -75,8 +119,8 @@ const DataPanel: React.FC<DataPanelProps> = ({
     },
     {
       title: '时期',
-      dataIndex: 'period',
-      key: 'period',
+      dataIndex: 'era',
+      key: 'era',
       render: (text: string) => <Tag color="blue">{text}</Tag>,
     },
     {
@@ -131,7 +175,11 @@ const DataPanel: React.FC<DataPanelProps> = ({
             <Button icon={<ReloadOutlined />} onClick={loadDinosaurs}>
               刷新
             </Button>
-            <Button type="primary" icon={<PlusOutlined />}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={handleCreateDinosaur}
+            >
               添加恐龙
             </Button>
           </Space>
@@ -154,12 +202,41 @@ const DataPanel: React.FC<DataPanelProps> = ({
 
       {/* 编辑恐龙模态框 */}
       <Modal
-        title="编辑恐龙信息"
+        title={isCreating ? '添加恐龙信息' : '编辑恐龙信息'}
         open={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
         footer={null}
         width={600}
       >
+        <div style={{ marginBottom: '16px' }}>
+          <Input.TextArea
+            rows={4}
+            placeholder="请输入JSON格式的恐龙数据，点击解析按钮将自动填充表单"
+            onChange={(e) => {
+              // 保存JSON输入到状态，而不是表单字段
+              editForm.setFieldsValue({ _jsonInput: e.target.value });
+            }}
+          />
+          <Button
+            type="primary"
+            onClick={() => {
+              const jsonInput = editForm.getFieldValue('_jsonInput');
+              if (jsonInput) {
+                try {
+                  const jsonData = JSON.parse(jsonInput);
+                  editForm.setFieldsValue(jsonData);
+                  message.success('JSON解析成功');
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } catch (err: any) {
+                  message.error('JSON格式错误, ' + err.message);
+                }
+              }
+            }}
+            style={{ marginTop: '8px' }}
+          >
+            解析JSON
+          </Button>
+        </div>
         <Form form={editForm} layout="vertical" onFinish={handleUpdateDinosaur}>
           <Form.Item
             label="名称"
@@ -177,14 +254,29 @@ const DataPanel: React.FC<DataPanelProps> = ({
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                label="时期"
-                name="period"
-                rules={[{ required: true, message: '请输入恐龙时期' }]}
-              >
+              <Form.Item label="年代" name="era">
                 <Input placeholder="例如：白垩纪" />
               </Form.Item>
             </Col>
+            <Col span={12}>
+              <Form.Item label="地质时期" name="period">
+                <Input placeholder="例如：白垩纪" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="开始年代 (百万年前)" name="start_mya">
+                <InputNumber style={{ width: '100%' }} placeholder="例如：68" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="结束年代 (百万年前)" name="end_mya">
+                <InputNumber style={{ width: '100%' }} placeholder="例如：66" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 label="饮食习惯"
@@ -227,6 +319,65 @@ const DataPanel: React.FC<DataPanelProps> = ({
           </Form.Item>
           <Form.Item label="描述" name="description">
             <Input.TextArea rows={4} placeholder="请输入恐龙描述" />
+          </Form.Item>
+
+          {/* 生物学分类信息 */}
+          <Typography.Title
+            level={5}
+            style={{ marginTop: '24px', marginBottom: '16px' }}
+          >
+            生物学分类信息
+          </Typography.Title>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="界" name="taxonomy_kingdom">
+                <Input placeholder="例如：动物界" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="门" name="taxonomy_phylum">
+                <Input placeholder="例如：脊索动物门" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="纲" name="taxonomy_class">
+                <Input placeholder="例如：蜥形纲" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="目" name="taxonomy_order">
+                <Input placeholder="例如：蜥臀目" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="亚目" name="taxonomy_suborder">
+                <Input placeholder="例如：兽脚亚目" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="科" name="taxonomy_family">
+                <Input placeholder="例如：暴龙科" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="亚科" name="taxonomy_subfamily">
+                <Input placeholder="例如：暴龙亚科" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="属" name="taxonomy_genus">
+                <Input placeholder="例如：暴龙属" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Form.Item label="种" name="taxonomy_species">
+            <Input placeholder="例如：雷克斯暴龙" />
           </Form.Item>
 
           <Form.Item>

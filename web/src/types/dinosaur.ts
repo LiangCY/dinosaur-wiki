@@ -7,7 +7,10 @@ export interface Dinosaur {
   id: string;
   name: string;
   scientific_name: string;
+  era: string;
   period: string;
+  start_mya: number;
+  end_mya: number;
   diet: string;
   length_min_meters?: number;
   length_max_meters?: number;
@@ -16,6 +19,15 @@ export interface Dinosaur {
   habitat?: string;
   region?: string;
   description?: string;
+  taxonomy_kingdom?: string;
+  taxonomy_phylum?: string;
+  taxonomy_class?: string;
+  taxonomy_order?: string;
+  taxonomy_suborder?: string;
+  taxonomy_family?: string;
+  taxonomy_subfamily?: string;
+  taxonomy_genus?: string;
+  taxonomy_species?: string;
   images?: DinosaurImage[];
   created_at: string;
   updated_at: string;

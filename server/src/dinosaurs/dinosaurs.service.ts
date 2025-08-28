@@ -6,7 +6,10 @@ export interface Dinosaur {
   id: string;
   name: string;
   scientific_name: string;
+  era: string;
   period: string;
+  start_mya: number;
+  end_mya: number;
   diet: string;
   length_min_meters?: number;
   length_max_meters?: number;
@@ -15,6 +18,15 @@ export interface Dinosaur {
   habitat?: string;
   region?: string;
   description?: string;
+  taxonomy_kingdom?: string;
+  taxonomy_phylum?: string;
+  taxonomy_class?: string;
+  taxonomy_order?: string;
+  taxonomy_suborder?: string;
+  taxonomy_family?: string;
+  taxonomy_subfamily?: string;
+  taxonomy_genus?: string;
+  taxonomy_species?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -55,7 +67,7 @@ export class DinosaursService {
         );
       }
 
-      const dinosaurs = dinosaursResult.data || [];
+      const dinosaurs = (dinosaursResult.data as Dinosaur[]) || [];
 
       // 如果没有恐龙数据，直接返回空数组
       if (dinosaurs.length === 0) {
@@ -189,7 +201,7 @@ export class DinosaursService {
         throw new Error(`Failed to search dinosaurs: ${result.error.message}`);
       }
 
-      return result.data || [];
+      return (result.data as Dinosaur[]) || [];
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -216,7 +228,7 @@ export class DinosaursService {
         );
       }
 
-      return result.data || [];
+      return (result.data as Dinosaur[]) || [];
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -243,7 +255,7 @@ export class DinosaursService {
         );
       }
 
-      return result.data || [];
+      return (result.data as Dinosaur[]) || [];
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -263,7 +275,10 @@ export class DinosaursService {
         .insert({
           name: dinosaurData.name,
           scientific_name: dinosaurData.scientific_name,
+          era: dinosaurData.era,
           period: dinosaurData.period,
+          start_mya: dinosaurData.start_mya,
+          end_mya: dinosaurData.end_mya,
           diet: dinosaurData.diet,
           length_min_meters: dinosaurData.length_min_meters,
           length_max_meters: dinosaurData.length_max_meters,
@@ -272,6 +287,15 @@ export class DinosaursService {
           habitat: dinosaurData.habitat,
           region: dinosaurData.region,
           description: dinosaurData.description,
+          taxonomy_kingdom: dinosaurData.taxonomy_kingdom,
+          taxonomy_phylum: dinosaurData.taxonomy_phylum,
+          taxonomy_class: dinosaurData.taxonomy_class,
+          taxonomy_order: dinosaurData.taxonomy_order,
+          taxonomy_suborder: dinosaurData.taxonomy_suborder,
+          taxonomy_family: dinosaurData.taxonomy_family,
+          taxonomy_subfamily: dinosaurData.taxonomy_subfamily,
+          taxonomy_genus: dinosaurData.taxonomy_genus,
+          taxonomy_species: dinosaurData.taxonomy_species,
         })
         .select()
         .single();
@@ -348,7 +372,7 @@ export class DinosaursService {
         throw new Error(`Failed to add fossils: ${result.error.message}`);
       }
 
-      return result.data || [];
+      return (result.data as DinosaurFossil[]) || [];
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -405,7 +429,7 @@ export class DinosaursService {
         );
       }
 
-      return result.data || [];
+      return (result.data as { url: string; description?: string }[]) || [];
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';

@@ -55,7 +55,7 @@ function App() {
         </div>
       </Header>
 
-      <Content style={{ padding: '24px', marginTop: '64px' }}>
+      <Content style={{ padding: '16px 0', marginTop: '64px' }}>
         <div className="container">
           <Routes>
             <Route path="/" element={<DinosaurList />} />

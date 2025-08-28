@@ -50,6 +50,12 @@ export const dinosaurApi = {
     return response.data;
   },
 
+  // 创建恐龙
+  createDinosaur: async (dinosaur: Omit<Dinosaur, 'id' | 'created_at' | 'updated_at'>): Promise<Dinosaur> => {
+    const response = await api.post('/dinosaurs', dinosaur);
+    return response.data;
+  },
+
   // 删除恐龙
   deleteDinosaur: async (id: string): Promise<void> => {
     await api.delete(`/dinosaurs/${id}`);
