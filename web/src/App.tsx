@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Layout, Menu, Typography } from 'antd';
-import {
-  HomeOutlined,
-  RobotOutlined,
-} from '@ant-design/icons';
+import { HomeOutlined, RobotOutlined } from '@ant-design/icons';
 import DinosaurList from './pages/home/DinosaurList';
 import AdminPage from './pages/admin';
 import DinosaurDetailPage from './pages/detail';
 import './styles/responsive.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import './styles/responsive.css';
 
 const { Header, Content, Footer } = Layout;

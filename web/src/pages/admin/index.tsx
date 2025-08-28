@@ -32,7 +32,7 @@ const AdminPage: React.FC = () => {
         <Button onClick={handleBack}>返回恐龙百科</Button>
       </Header>
       <Content style={{ padding: '24px' }}>
-        <AdminPanel onBack={handleBack} />
+        <AdminPanel />
       </Content>
     </Layout>
   );

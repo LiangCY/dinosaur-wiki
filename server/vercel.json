@@ -8,7 +8,7 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "src/main.ts",
       "methods": [
         "GET",
@@ -21,6 +21,10 @@
         "CONNECT",
         "TRACE"
       ]
+    },
+    {
+      "src": "/.*",
+      "dest": "static/index.html"
     }
   ]
 }
