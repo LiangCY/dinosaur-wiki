@@ -27,7 +27,7 @@ export interface DinosaurImageDto {
   description?: string;
 }
 
-@Controller('dinosaurs')
+@Controller('api/dinosaurs')
 export class DinosaursController {
   constructor(private readonly dinosaursService: DinosaursService) {}
 

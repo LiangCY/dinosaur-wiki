@@ -32,7 +32,7 @@ export class AgentConfigDto {
 }
 
 @ApiTags('AI-Agent')
-@Controller('ai-agent')
+@Controller('api/ai-agent')
 export class AiAgentController {
   private agent: DinosaurAgent | null = null;
 
