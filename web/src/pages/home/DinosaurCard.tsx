@@ -2,7 +2,6 @@ import React from 'react';
 import { Card, Tag, Button, Image } from 'antd';
 import {
   EyeOutlined,
-  EnvironmentOutlined,
   ClockCircleOutlined,
 } from '@ant-design/icons';
 import type { Dinosaur } from '../../types/dinosaur';
@@ -105,12 +104,13 @@ const DinosaurCard: React.FC<DinosaurCardProps> = ({ dinosaur }) => {
           <div className="card-content">
             <div className="card-tags" style={{ marginBottom: '12px' }}>
               <Tag
-                color={getPeriodColor(dinosaur.period)}
+                color={getPeriodColor(dinosaur.era)}
                 icon={<ClockCircleOutlined />}
               >
-                {dinosaur.period}
+                {dinosaur.era}
               </Tag>
               <Tag color={getDietColor(dinosaur.diet)}>{dinosaur.diet}</Tag>
+
             </div>
 
             <div className="card-info">
@@ -139,19 +139,11 @@ const DinosaurCard: React.FC<DinosaurCardProps> = ({ dinosaur }) => {
                   </span>
                 </div>
               )}
-              {dinosaur.region && (
-                <div className="info-item">
-                  <EnvironmentOutlined style={{ marginRight: '4px' }} />
-                  <span className="info-value">{dinosaur.region}</span>
-                </div>
-              )}
             </div>
 
             {dinosaur.description && (
               <p className="card-description">
-                {dinosaur.description.length > 100
-                  ? `${dinosaur.description.substring(0, 100)}...`
-                  : dinosaur.description}
+                {dinosaur.description}
               </p>
             )}
           </div>
@@ -208,6 +200,11 @@ const DinosaurCard: React.FC<DinosaurCardProps> = ({ dinosaur }) => {
           font-size: 14px;
           line-height: 1.5;
           margin: 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 4;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         
         @media (max-width: 768px) {

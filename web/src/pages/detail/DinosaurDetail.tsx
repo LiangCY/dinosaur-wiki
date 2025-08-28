@@ -186,7 +186,10 @@ const DinosaurDetailComponent: React.FC<DinosaurDetailProps> = ({
                 </div>
               </div>
 
-              <Descriptions title="基本信息" column={{ sm: 2, md: 4, lg: 6 }}>
+              <Descriptions
+                title="基本信息"
+                column={{ xs: 2, sm: 2, md: 4, lg: 6, xl: 6, xxl: 6 }}
+              >
                 {(dinosaur.length_min_meters || dinosaur.length_max_meters) && (
                   <Descriptions.Item label="体长" span={2}>
                     {dinosaur.length_min_meters && dinosaur.length_max_meters
@@ -220,9 +223,9 @@ const DinosaurDetailComponent: React.FC<DinosaurDetailProps> = ({
                     {dinosaur.habitat}
                   </Descriptions.Item>
                 )}
-                {dinosaur.region && (
-                  <Descriptions.Item label="发现地区" span="filled">
-                    {dinosaur.region}
+                {dinosaur.period && (
+                  <Descriptions.Item label="地质时期" span="filled">
+                    {dinosaur.period}
                   </Descriptions.Item>
                 )}
               </Descriptions>

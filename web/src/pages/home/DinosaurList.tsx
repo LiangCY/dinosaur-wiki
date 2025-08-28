@@ -8,15 +8,12 @@ import { dinosaurApi } from '../../services/api';
 const { Search } = Input;
 const { Option } = Select;
 
-// 定义空接口，表示没有额外的属性
-interface DinosaurListProps {}
-
-const DinosaurList: React.FC<DinosaurListProps> = () => {
+const DinosaurList: React.FC = () => {
   const [dinosaurs, setDinosaurs] = useState<Dinosaur[]>([]);
   const [filteredDinosaurs, setFilteredDinosaurs] = useState<Dinosaur[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('all');
+  const [selectedEra, setSelectedEra] = useState<string>('all');
   const [selectedDiet, setSelectedDiet] = useState<string>('all');
 
   // 获取所有恐龙数据
@@ -58,10 +55,8 @@ const DinosaurList: React.FC<DinosaurListProps> = () => {
     }
 
     // 按时期筛选
-    if (selectedPeriod !== 'all') {
-      filtered = filtered.filter(
-        (dinosaur) => dinosaur.period === selectedPeriod,
-      );
+    if (selectedEra !== 'all') {
+      filtered = filtered.filter((dinosaur) => dinosaur.era === selectedEra);
     }
 
     // 按饮食习惯筛选
@@ -70,10 +65,10 @@ const DinosaurList: React.FC<DinosaurListProps> = () => {
     }
 
     setFilteredDinosaurs(filtered);
-  }, [dinosaurs, searchQuery, selectedPeriod, selectedDiet]);
+  }, [dinosaurs, searchQuery, selectedEra, selectedDiet]);
 
   // 获取唯一的时期列表
-  const periods = Array.from(new Set(dinosaurs.map((d) => d.period)));
+  const eras = Array.from(new Set(dinosaurs.map((d) => d.era)));
 
   // 获取唯一的饮食习惯列表
   const diets = Array.from(new Set(dinosaurs.map((d) => d.diet)));
@@ -82,8 +77,8 @@ const DinosaurList: React.FC<DinosaurListProps> = () => {
     setSearchQuery(value);
   };
 
-  const handlePeriodChange = (value: string) => {
-    setSelectedPeriod(value);
+  const handleEraChange = (value: string) => {
+    setSelectedEra(value);
   };
 
   const handleDietChange = (value: string) => {
@@ -92,7 +87,7 @@ const DinosaurList: React.FC<DinosaurListProps> = () => {
 
   const clearFilters = () => {
     setSearchQuery('');
-    setSelectedPeriod('all');
+    setSelectedEra('all');
     setSelectedDiet('all');
   };
 
@@ -128,11 +123,11 @@ const DinosaurList: React.FC<DinosaurListProps> = () => {
               placeholder="选择时期"
               size="large"
               style={{ width: '100%' }}
-              value={selectedPeriod}
-              onChange={handlePeriodChange}
+              value={selectedEra}
+              onChange={handleEraChange}
             >
               <Option value="all">所有时期</Option>
-              {periods.map((period) => (
+              {eras.map((period) => (
                 <Option key={period} value={period}>
                   {period}
                 </Option>
@@ -161,7 +156,7 @@ const DinosaurList: React.FC<DinosaurListProps> = () => {
                 找到 {filteredDinosaurs.length} 只恐龙
               </span>
               {(searchQuery ||
-                selectedPeriod !== 'all' ||
+                selectedEra !== 'all' ||
                 selectedDiet !== 'all') && (
                 <a onClick={clearFilters} style={{ fontSize: '14px' }}>
                   清除筛选
