@@ -27,8 +27,12 @@
       ]
     },
     {
+      "src": ".*\\.(js|css|png|svg|ico|jpg|jpeg|gif|woff|woff2|ttf|eot)$",
+      "dest": "/static/$0"
+    },
+    {
       "src": "/(.*)",
-      "dest": "static/$1"
+      "dest": "/static/index.html"
     }
   ]
 }
